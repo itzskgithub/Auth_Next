@@ -1,9 +1,12 @@
 "use client";
-
-import React, { useState } from "react";
+import toast from "react-hot-toast";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import Link from "next/link";
+import {useRouter} from 'next/navigation';
 
 export default function SignupPage() {
+    const router = useRouter();
 
     const [user, setUser] = useState({
         email: "",
@@ -11,9 +14,38 @@ export default function SignupPage() {
         password: "",
     });
 
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [loading, setLoading] = useState(false);
+
     const onSignup = async () => {
-        console.log("Signup clicked");
+        try {
+            setLoading(true);
+            const response = await axios.post("/api/users/signup", user);
+            console.log("signup success", response.data);
+            router.push("/login");
+        } catch (error: any) {
+            console.log("Signup failed", error.message);
+            toast.error(error.message);
+        }
+        finally {
+            setLoading(false);
+        }
     };
+ 
+
+    useEffect(() => {
+        if(
+            user.email.length > 0 && 
+            user.password.length > 0 &&
+            user.username.length > 0
+        ){
+            setButtonDisabled(false);
+        }
+        else{
+            setButtonDisabled(true);
+        }
+        
+    }, [user]);
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
@@ -21,7 +53,7 @@ export default function SignupPage() {
             <div className="bg-white p-8 rounded-2xl shadow-2xl w-[350px]">
 
                 <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
-                    Signup
+                    {loading ? "Processing" : "Signup"}
                 </h1>
 
                 {/* Username */}
@@ -92,7 +124,7 @@ export default function SignupPage() {
                     onClick={onSignup}
                     className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
                 >
-                    Signup
+                    {buttonDisabled ? "Fill the details" : "Sign Up"}
                 </button>
 
                 {/* Login Link */}
