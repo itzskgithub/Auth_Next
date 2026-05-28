@@ -1,18 +1,51 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import axios from 'axios'
 
 export default function LoginPage() {
+
+    const router = useRouter();
 
     const [user, setUser] = useState({
         email: "",
         password: "",
     });
 
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [loading, setLoading] = useState(false);
+
+    
     const onLogin = async () => {
-        console.log("Login clicked");
+        try {
+            setLoading(true);
+            const response = await axios.post("/api/users/login", user);
+            console.log("Login success", response.data);
+            toast.success("Login success");
+            router.push("/profile");
+
+
+
+        } catch (error: any) {
+            console.log("Login failed", error.message);
+            toast.error(error.message);
+        }
+        finally{
+            setLoading(false);
+        }
     };
+
+    useEffect(() => {
+        if(user.email.length > 0 && user.password.length > 0) {
+            setButtonDisabled(false);
+        }
+        else{
+            setButtonDisabled(true);
+        }
+    }, [user]);
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
@@ -20,7 +53,7 @@ export default function LoginPage() {
             <div className="bg-white p-8 rounded-2xl shadow-2xl w-[350px]">
 
                 <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
-                    Login
+                    {loading ? "Processing" : "Login"}
                 </h1>
 
                 
