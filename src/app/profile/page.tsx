@@ -1,6 +1,11 @@
 export default function ProfilePage() {
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-black via-gray-900 to-orange-900 px-4">
+        <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-black via-gray-900 to-orange-900 px-4 pt-24">
+
+            {/* Logout Button */}
+            <button className="absolute top-6 right-6 px-5 py-2 bg-red-500 text-white font-semibold rounded-xl shadow-lg hover:bg-red-600 transition duration-300">
+                Logout
+            </button>
 
             <div className="w-full max-w-md bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl shadow-2xl p-8 text-center">
 
